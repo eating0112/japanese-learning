@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="每天 30 分鐘、六週完成的日本自由行日語課程。">
+  <title>42日・旅する日本語｜六週自由行課程</title>
+  <style>
+    :root {
+      --paper: #f7f4ed;
+      --surface: #fffdf8;
+      --ink: #18302d;
+      --muted: #68746f;
+      --line: #d8ddd5;
+      --red: #c7473d;
+      --red-dark: #963229;
+      --green: #2d6a55;
+      --green-soft: #e3eee8;
+      --gold: #c69645;
+      --shadow: 0 16px 48px rgba(24, 48, 45, .10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 92% 6%, rgba(198, 150, 69, .14), transparent 25rem),
+        linear-gradient(180deg, #f5f0e6 0, var(--paper) 28rem);
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      line-height: 1.65;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    :focus-visible { outline: 3px solid rgba(45, 106, 85, .35); outline-offset: 3px; }
+
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 28px 0 64px; }
+    .eyebrow { margin: 0 0 8px; color: var(--red); font-size: .78rem; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 30px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; }
+    .brand-mark { display: grid; place-items: center; width: 42px; aspect-ratio: 1; border-radius: 50%; color: #fff; background: var(--red); box-shadow: inset 0 0 0 7px rgba(255,255,255,.12); }
+    .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .quiet-button, .primary-button, .week-button, .speak-button, .answer-button {
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease;
+    }
+    .quiet-button { padding: 9px 14px; border: 1px solid var(--line); background: rgba(255,255,255,.55); }
+    .quiet-button:hover, .speak-button:hover, .answer-button:hover { transform: translateY(-1px); border-color: var(--green); }
+    .toggle { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.55); cursor: pointer; }
+    .toggle input { accent-color: var(--green); }
+
+    .hero { display: grid; grid-template-columns: 1.45fr .75fr; gap: 22px; margin-bottom: 24px; }
+    .hero-copy, .progress-card { border: 1px solid rgba(24,48,45,.08); border-radius: 30px; box-shadow: var(--shadow); }
+    .hero-copy { position: relative; overflow: hidden; min-height: 305px; padding: clamp(28px, 5vw, 56px); color: #fff; background: var(--ink); }
+    .hero-copy::after { content: "旅"; position: absolute; right: 18px; bottom: -74px; color: rgba(255,255,255,.055); font-family: serif; font-size: 17rem; line-height: 1; pointer-events: none; }
+    h1 { max-width: 730px; margin: 0 0 16px; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(2.35rem, 5.6vw, 5.15rem); font-weight: 500; line-height: 1.02; letter-spacing: -.045em; }
+    .hero-copy p { max-width: 620px; margin: 0; color: rgba(255,255,255,.75); font-size: 1.02rem; }
+    .hero-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
+    .hero-tags span { padding: 7px 12px; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; color: rgba(255,255,255,.9); font-size: .85rem; }
+
+    .progress-card { display: flex; flex-direction: column; justify-content: space-between; padding: 28px; background: var(--surface); }
+    .progress-ring { position: relative; display: grid; place-items: center; width: 150px; aspect-ratio: 1; margin: 6px auto 18px; border-radius: 50%; background: conic-gradient(var(--red) var(--progress, 0%), #e7e6df 0); }
+    .progress-ring::before { content: ""; width: 118px; aspect-ratio: 1; border-radius: 50%; background: var(--surface); }
+    .progress-number { position: absolute; text-align: center; }
+    .progress-number strong { display: block; font-family: Georgia, serif; font-size: 2.25rem; line-height: 1; }
+    .progress-number span { color: var(--muted); font-size: .78rem; }
+    .progress-card h2 { margin: 0; font-size: 1.15rem; }
+    .progress-card p { margin: 6px 0 0; color: var(--muted); font-size: .9rem; }
+    .date-row { display: grid; gap: 5px; margin-top: 20px; color: var(--muted); font-size: .8rem; }
+    .date-row input { width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff; }
+
+    .workspace { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; align-items: start; }
+    .sidebar { position: sticky; top: 18px; display: grid; gap: 10px; padding: 18px; border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255,253,248,.82); backdrop-filter: blur(14px); }
+    .sidebar-title { margin: 0 0 4px; font-size: .78rem; letter-spacing: .14em; color: var(--muted); }
+    .week-button { display: grid; grid-template-columns: 34px 1fr; gap: 10px; width: 100%; padding: 10px; text-align: left; background: transparent; }
+    .week-button:hover, .week-button.active { background: var(--green-soft); }
+    .week-button:disabled { cursor: wait; opacity: .45; }
+    .week-number { display: grid; place-items: center; width: 34px; aspect-ratio: 1; border-radius: 50%; color: var(--green); background: #fff; font-weight: 900; }
+    .week-button.active .week-number { color: #fff; background: var(--green); }
+    .week-copy strong, .week-copy small { display: block; }
+    .week-copy strong { font-size: .92rem; }
+    .week-copy small { color: var(--muted); font-size: .72rem; }
+
+    .content { min-width: 0; }
+    .week-heading { display: flex; justify-content: space-between; gap: 20px; align-items: end; margin: 4px 0 18px; }
+    .week-heading h2 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(1.8rem, 4vw, 2.65rem); font-weight: 500; line-height: 1.15; }
+    .week-heading p { max-width: 560px; margin: 7px 0 0; color: var(--muted); }
+    .week-badge { flex: none; padding: 7px 12px; border-radius: 999px; color: var(--red-dark); background: #f7dfdb; font-size: .78rem; font-weight: 800; }
+
+    .day-strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 18px; }
+    .day-tab { min-width: 0; padding: 11px 6px; border: 1px solid var(--line); border-radius: 14px; color: var(--muted); background: var(--surface); cursor: pointer; }
+    .day-tab strong, .day-tab span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .day-tab strong { color: var(--ink); font-size: .82rem; }
+    .day-tab span { font-size: .68rem; }
+    .day-tab.active { color: #fff; border-color: var(--red); background: var(--red); }
+    .day-tab.active strong { color: #fff; }
+    .day-tab.done::after { content: "✓"; display: inline-grid; place-items: center; width: 18px; height: 18px; margin-top: 5px; border-radius: 50%; color: #fff; background: var(--green); font-size: .7rem; }
+
+    .lesson { padding: clamp(22px, 4vw, 38px); border: 1px solid var(--line); border-radius: 28px; background: var(--surface); box-shadow: 0 12px 36px rgba(24,48,45,.07); }
+    .lesson-header { display: flex; justify-content: space-between; gap: 18px; align-items: start; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    .lesson-kicker { margin: 0 0 5px; color: var(--red); font-size: .78rem; font-weight: 900; letter-spacing: .12em; }
+    .lesson h3 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: clamp(1.65rem, 3vw, 2.25rem); font-weight: 500; }
+    .lesson-goal { margin: 8px 0 0; color: var(--muted); }
+    .complete-button { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 999px; background: #fff; cursor: pointer; }
+    .complete-button.done { color: #fff; border-color: var(--green); background: var(--green); }
+
+    .time-plan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0 25px; }
+    .time-block { padding: 12px; border-radius: 14px; background: #f1efe8; }
+    .time-block strong, .time-block span { display: block; }
+    .time-block strong { font-size: .88rem; }
+    .time-block span { color: var(--muted); font-size: .72rem; }
+
+    .section-title { margin: 28px 0 12px; font-size: .78rem; font-weight: 900; letter-spacing: .13em; color: var(--muted); text-transform: uppercase; }
+    .tip { padding: 15px 17px; border-left: 4px solid var(--gold); border-radius: 0 14px 14px 0; background: #f7f0df; }
+    .tip strong { color: #805d22; }
+    .phrase-list { display: grid; gap: 10px; }
+    .phrase { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 15px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+    .jp { font-family: "Yu Mincho", "Noto Serif JP", serif; font-size: 1.24rem; font-weight: 700; }
+    .reading { margin-left: 8px; color: var(--muted); font-family: inherit; font-size: .78rem; font-weight: 500; }
+    .romaji { display: none; margin: 2px 0; color: var(--green); font-size: .82rem; }
+    body.show-romaji .romaji { display: block; }
+    .meaning { color: var(--muted); font-size: .88rem; }
+    .speak-button { display: grid; place-items: center; width: 42px; aspect-ratio: 1; border: 1px solid var(--line); background: var(--surface); }
+    .speak-button::before { content: "▶"; margin-left: 2px; color: var(--red); font-size: .8rem; }
+
+    .practice { padding: 19px; border-radius: 18px; background: var(--ink); color: #fff; }
+    .practice p { margin: 0 0 12px; color: rgba(255,255,255,.72); }
+    .practice strong { color: #fff; }
+    .answer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .answer-button { padding: 10px; border: 1px solid rgba(255,255,255,.18); color: #fff; background: rgba(255,255,255,.08); }
+    .answer-button.correct { color: #173f31; background: #bce3cf; }
+    .answer-button.wrong { background: #883f39; }
+    .feedback { min-height: 1.6em; margin: 10px 0 0 !important; font-weight: 800; }
+
+    .phrasebook { margin-top: 26px; padding: clamp(22px, 4vw, 34px); border: 1px solid var(--line); border-radius: 26px; background: #ebe6da; }
+    .phrasebook-head { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
+    .phrasebook h2 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 1.8rem; font-weight: 500; }
+    .phrasebook p { margin: 5px 0 0; color: var(--muted); }
+    .phrase-search { min-width: 240px; padding: 10px 13px; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+    .quick-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px; }
+    .quick-item { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 13px 15px; border-radius: 14px; background: rgba(255,255,255,.72); }
+    .quick-item strong { display: block; font-family: "Yu Mincho", serif; }
+    .quick-item small { color: var(--muted); }
+    .empty { grid-column: 1 / -1; padding: 28px; text-align: center; color: var(--muted); }
+
+    .footer { display: flex; justify-content: space-between; gap: 20px; margin-top: 28px; padding: 20px 4px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .82rem; }
+    .mobile-weeks { display: none; }
+
+    @media (max-width: 860px) {
+      .hero { grid-template-columns: 1fr; }
+      .progress-card { display: grid; grid-template-columns: auto 1fr; gap: 18px; align-items: center; }
+      .progress-ring { margin: 0; width: 128px; }
+      .progress-ring::before { width: 100px; }
+      .workspace { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .mobile-weeks { display: flex; gap: 8px; overflow-x: auto; padding: 3px 0 12px; }
+      .mobile-weeks .week-button { flex: 0 0 185px; border: 1px solid var(--line); background: var(--surface); }
+    }
+    @media (max-width: 620px) {
+      .shell { width: min(100% - 20px, 1180px); padding-top: 15px; }
+      .topbar { align-items: start; }
+      .brand span:last-child { display: none; }
+      .top-actions { justify-content: flex-end; }
+      .hero-copy { min-height: 330px; padding: 28px 24px; }
+      .progress-card { grid-template-columns: 1fr; }
+      .progress-ring { margin: 0 auto; }
+      .week-heading { display: block; }
+      .week-badge { display: inline-block; margin-top: 10px; }
+      .day-strip { grid-template-columns: repeat(7, minmax(62px, 1fr)); overflow-x: auto; padding-bottom: 5px; }
+      .lesson-header { display: block; }
+      .complete-button { margin-top: 15px; }
+      .time-plan { grid-template-columns: repeat(2, 1fr); }
+      .phrase { grid-template-columns: 1fr auto; }
+      .answer-grid, .quick-list { grid-template-columns: 1fr; }
+      .phrasebook-head { display: block; }
+      .phrase-search { width: 100%; margin-top: 12px; }
+      .footer { display: block; }
+    }
+
+    @media print {
+      body { background: #fff; color: #000; }
+      .topbar, .hero, .sidebar, .mobile-weeks, .week-heading, .day-strip, .lesson, .complete-button, .practice, .speak-button, .footer { display: none !important; }
+      .shell { width: 100%; padding: 0; }
+      .workspace { display: block; }
+      .phrasebook { margin: 0; border: 0; box-shadow: none; padding: 0; background: #fff; }
+      .quick-list { grid-template-columns: repeat(2, 1fr); }
+      .quick-item { break-inside: avoid; padding: 4px 7px; border: 1px solid #ddd; background: #fff; font-size: 9pt; }
+      .phrase-search, .phrasebook p { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">日</span><span>旅する日本語</span></div>
+      <div class="top-actions">
+        <label class="toggle"><input id="romajiToggle" type="checkbox"> 顯示羅馬字</label>
+        <button class="quiet-button" id="printButton" type="button">列印旅遊小抄</button>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="pageTitle">
+      <div class="hero-copy">
+        <p class="eyebrow">6 weeks · 30 minutes a day</p>
+        <h1 id="pageTitle">42日，讓日語陪你去旅行。</h1>
+        <p>從五十音出發，不追求考試文法；先把機場、交通、住宿、用餐、購物與求助真正說出口。</p>
+        <div class="hero-tags"><span>每日 30 分鐘</span><span>假名＋漢字讀音</span><span>實用情境句</span><span>離線可用</span></div>
+      </div>
+      <aside class="progress-card" aria-label="學習進度">
+        <div>
+          <div class="progress-ring" id="progressRing">
+            <div class="progress-number"><strong id="progressPercent">0%</strong><span id="progressCount">0 / 42 日</span></div>
+          </div>
+          <h2 id="progressTitle">今天，先開口說第一句。</h2>
+          <p id="progressHint">不需要背完才前進；能在情境中辨認、說出口，就算過關。</p>
+        </div>
+        <label class="date-row">課程開始日<input id="startDate" type="date"></label>
+      </aside>
+    </section>
+
+    <div class="mobile-weeks" id="mobileWeeks" aria-label="週次選擇"></div>
+
+    <section class="workspace">
+      <nav class="sidebar" aria-label="六週課程">
+        <p class="sidebar-title">六週路線</p>
+        <div id="weekNav"></div>
+      </nav>
+
+      <div class="content">
+        <div class="week-heading">
+          <div><p class="eyebrow" id="weekEyebrow">Week 1</p><h2 id="weekTitle">先活下來，再說漂亮</h2><p id="weekDescription">建立禮貌、數字與基本提問能力，讓你從抵達日本的第一刻就敢開口。</p></div>
+          <span class="week-badge" id="weekBadge">目標：能完成 30 秒基本互動</span>
+        </div>
+
+        <div class="day-strip" id="dayStrip" role="tablist" aria-label="每日課程"></div>
+        <article class="lesson" id="lesson" aria-live="polite"></article>
+
+        <section class="phrasebook" aria-labelledby="phrasebookTitle">
+          <div class="phrasebook-head">
+            <div><p class="eyebrow">Quick phrasebook</p><h2 id="phrasebookTitle">隨身救命句</h2><p>搜尋中文或日文，出發前可列印成一頁。</p></div>
+            <input class="phrase-search" id="phraseSearch" type="search" placeholder="搜尋：廁所、車站、多少錢…" aria-label="搜尋旅遊句">
+          </div>
+          <div class="quick-list" id="quickList"></div>
+        </section>
+      </div>
+    </section>
+
+    <footer class="footer"><span>原則：先被理解，再追求完美。</span><span>進度只儲存在這台裝置的瀏覽器。</span></footer>
+  </main>
+
+  <script>
+    const weeks = [
+      { title: '先活下來，再說漂亮', short: '生存基礎', description: '建立禮貌、數字與基本提問能力，讓你從抵達日本的第一刻就敢開口。', badge: '能完成 30 秒基本互動' },
+      { title: '從機場移動到目的地', short: '交通移動', description: '看懂車站線索、買票、轉乘、問路，遇到複雜交通也能確認方向。', badge: '能獨立完成一次轉乘' },
+      { title: '住得安心，也吃得開心', short: '住宿用餐', description: '從入住到點餐、客製需求與結帳，完成最常發生的旅遊對話。', badge: '能完成入住與點餐' },
+      { title: '買東西、玩景點', short: '購物觀光', description: '詢價、尺寸、免稅、購票、拍照規範與遺失物，讓行程更自在。', badge: '能處理購物與景點需求' },
+      { title: '出狀況時，說出關鍵句', short: '問題求助', description: '聽不懂、身體不適、迷路、遺失與交通中斷時，用最短日語取得協助。', badge: '能清楚描述一個問題' },
+      { title: '把整趟旅程演練一次', short: '整合實戰', description: '把前五週串成完整自由行，透過角色扮演建立真正能上場的反應。', badge: '完成一日全日語模擬' }
+    ];
+
+    const lessons = [
+      {
+        week: 1, day: 1, title: '禮貌是最強的開場白', objective: '能用招呼、道謝與請求引起對方注意。', focus: '先把音量放慢、句尾說完整；鞠躬或點頭能讓語氣更柔和。',
+        phrases: [
+          ['すみません', 'すみません', 'sumimasen', '不好意思／麻煩你'],
+          ['ありがとうございます', 'ありがとうございます', 'arigatou gozaimasu', '非常謝謝你'],
+          ['お願いします', 'おねがいします', 'onegaishimasu', '拜託了／麻煩了'],
+          ['大丈夫です', 'だいじょうぶです', 'daijoubu desu', '沒問題／不用了']
+        ],
+        quiz: { q: '想禮貌地叫住店員，第一句最適合說什麼？', a: ['すみません', 'さようなら', 'いただきます'], correct: 0, explain: '「すみません」既能道歉，也能用來引起注意，是旅途中最高頻的開場句。' }
+      },
+      {
+        week: 1, day: 2, title: '聽懂數字與價格', objective: '能聽懂 1～10、百、千與常見價格。', focus: '先抓句尾的「円（えん）」；沒聽清楚時，請對方寫下來或再說一次。',
+        phrases: [
+          ['いくらですか', 'いくらですか', 'ikura desu ka', '多少錢？'],
+          ['千円です', 'せんえんです', 'sen en desu', '是一千日圓'],
+          ['これを一つください', 'これを ひとつ ください', 'kore o hitotsu kudasai', '請給我一個這個'],
+          ['書いてください', 'かいて ください', 'kaite kudasai', '請寫下來']
+        ],
+        quiz: { q: '「兩個」最常用哪個說法？', a: ['ひとつ', 'ふたつ', 'みっつ'], correct: 1, explain: 'ひとつ＝一個、ふたつ＝兩個、みっつ＝三個。' }
+      },
+      {
+        week: 1, day: 3, title: '用「這個、那個」完成需求', objective: '不用知道商品名稱，也能指物、詢問與購買。', focus: '靠近自己的用「これ」，靠近對方的用「それ」，離雙方都遠的用「あれ」。',
+        phrases: [
+          ['これは何ですか', 'これは なんですか', 'kore wa nan desu ka', '這是什麼？'],
+          ['それをください', 'それを ください', 'sore o kudasai', '請給我那個'],
+          ['あれは何ですか', 'あれは なんですか', 'are wa nan desu ka', '那邊那個是什麼？'],
+          ['これでお願いします', 'これで おねがいします', 'kore de onegaishimasu', '就用這個／麻煩這個']
+        ],
+        quiz: { q: '商品在店員手邊，你想說「請給我那個」，要用？', a: ['これ', 'それ', 'どれ'], correct: 1, explain: '靠近對方的物品用「それ」。' }
+      },
+      {
+        week: 1, day: 4, title: '問時間與營業資訊', objective: '能詢問現在時間、開始與結束時間。', focus: '聽時間時，先辨認數字，再抓「時（じ）」與「分（ふん／ぷん）」。',
+        phrases: [
+          ['今、何時ですか', 'いま、なんじですか', 'ima nanji desu ka', '現在幾點？'],
+          ['何時からですか', 'なんじから ですか', 'nanji kara desu ka', '幾點開始？'],
+          ['何時までですか', 'なんじまで ですか', 'nanji made desu ka', '到幾點？'],
+          ['十時半です', 'じゅうじはん です', 'juuji han desu', '十點半']
+        ],
+        quiz: { q: '想問「營業到幾點」，關鍵句尾是？', a: ['何時から', '何時まで', '何分ぐらい'], correct: 1, explain: '「まで」表示截止點；「何時までですか」就是到幾點。' }
+      },
+      {
+        week: 1, day: 5, title: '提出最基本的疑問', objective: '能用「哪裡、哪一個、有沒有」取得關鍵資訊。', focus: '問題最後加「か」，語氣上揚不必太誇張。',
+        phrases: [
+          ['どこですか', 'どこですか', 'doko desu ka', '在哪裡？'],
+          ['どれですか', 'どれですか', 'dore desu ka', '是哪一個？'],
+          ['ありますか', 'ありますか', 'arimasu ka', '有嗎？（物品）'],
+          ['できますか', 'できますか', 'dekimasu ka', '可以嗎／能做嗎？']
+        ],
+        quiz: { q: '想問店裡「有 Wi-Fi 嗎？」句尾最適合用？', a: ['いますか', 'ありますか', 'いきますか'], correct: 1, explain: 'Wi-Fi 是物品／設施，用「ありますか」。' }
+      },
+      {
+        week: 1, day: 6, title: '聽不懂時不要硬猜', objective: '能請對方放慢、重說，或改用簡單方式表達。', focus: '先說「すみません」，再提出一個明確請求，對方通常會很願意協助。',
+        phrases: [
+          ['もう一度お願いします', 'もう いちど おねがいします', 'mou ichido onegaishimasu', '請再說一次'],
+          ['ゆっくりお願いします', 'ゆっくり おねがいします', 'yukkuri onegaishimasu', '請說慢一點'],
+          ['分かりません', 'わかりません', 'wakarimasen', '我不明白'],
+          ['簡単な日本語でお願いします', 'かんたんな にほんごで おねがいします', 'kantan na nihongo de onegaishimasu', '請用簡單的日語']
+        ],
+        quiz: { q: '對方說太快，你應該說？', a: ['ゆっくりお願いします', '早くお願いします', '大丈夫です'], correct: 0, explain: '「ゆっくり」是慢慢地；完整說法很禮貌。' }
+      },
+      {
+        week: 1, day: 7, title: '第一週口說檢查站', objective: '在 30 秒內完成招呼、詢問、確認與道謝。', focus: '今天不學新句。把前六天的句子混在一起，連續說三輪。',
+        phrases: [
+          ['すみません、これは何ですか', 'すみません、これは なんですか', 'sumimasen, kore wa nan desu ka', '不好意思，這是什麼？'],
+          ['いくらですか', 'いくらですか', 'ikura desu ka', '多少錢？'],
+          ['もう一度お願いします', 'もう いちど おねがいします', 'mou ichido onegaishimasu', '請再說一次'],
+          ['ありがとうございます', 'ありがとうございます', 'arigatou gozaimasu', '非常謝謝你']
+        ],
+        quiz: { q: '角色扮演：你沒聽懂價格，最好的回應組合是？', a: ['分かりません。もう一度お願いします', '大丈夫です。さようなら', 'これはどこですか'], correct: 0, explain: '先表達沒聽懂，再請對方重說，需求最清楚。' }
+      },
+      {
+        week: 2, day: 1, title: '抵達機場：入境與領行李', objective: '能回答入境目的，並找到入境審查與行李轉盤。', focus: '入境問題通常很短。先聽「目的（もくてき）」與「何日（なんにち）」兩個關鍵詞。',
+        phrases: [
+          ['観光です', 'かんこう です', 'kankou desu', '我是來觀光的'],
+          ['六日間です', 'むいかかん です', 'muikakan desu', '停留六天'],
+          ['この住所に泊まります', 'この じゅうしょに とまります', 'kono juusho ni tomarimasu', '我住在這個地址'],
+          ['荷物受取はどこですか', 'にもつ うけとりは どこですか', 'nimotsu uketori wa doko desu ka', '行李領取處在哪裡？']
+        ],
+        quiz: { q: '入境人員問旅行目的，最直接的回答是？', a: ['観光です', '東京です', '六日です'], correct: 0, explain: '「観光です」就是「來觀光」，簡短清楚。' }
+      },
+      {
+        week: 2, day: 2, title: '買票、IC 卡與儲值', objective: '能買交通卡或車票，並詢問是否可使用。', focus: '買票用「枚（まい）」計算；一張是「一枚（いちまい）」。',
+        phrases: [
+          ['ICカードはどこで買えますか', 'アイシーカードは どこで かえますか', 'IC kaado wa doko de kaemasu ka', 'IC 卡在哪裡買得到？'],
+          ['切符を一枚ください', 'きっぷを いちまい ください', 'kippu o ichimai kudasai', '請給我一張票'],
+          ['このカードは使えますか', 'この カードは つかえますか', 'kono kaado wa tsukaemasu ka', '這張卡可以用嗎？'],
+          ['チャージをお願いします', 'チャージを おねがいします', 'chaaji o onegaishimasu', '麻煩幫我儲值']
+        ],
+        quiz: { q: '想買「一張」車票，量詞要用？', a: ['一つ', '一枚', '一本'], correct: 1, explain: '紙張、票券常用「枚（まい）」計算。' }
+      },
+      {
+        week: 2, day: 3, title: '找到月台，確認電車', objective: '能確認月台號碼，以及眼前的車是否到目的地。', focus: '不要只問「東京？」；用完整句確認，能避免搭到方向相反的車。',
+        phrases: [
+          ['東京駅へ行きたいです', 'とうきょうえきへ いきたいです', 'Toukyou-eki e ikitai desu', '我想去東京站'],
+          ['何番線ですか', 'なんばんせん ですか', 'nanbansen desu ka', '是第幾月台？'],
+          ['この電車は東京駅に行きますか', 'この でんしゃは とうきょうえきに いきますか', 'kono densha wa Toukyou-eki ni ikimasu ka', '這班電車會到東京站嗎？'],
+          ['急行ですか', 'きゅうこう ですか', 'kyuukou desu ka', '是急行車嗎？']
+        ],
+        quiz: { q: '想問第幾月台，要說？', a: ['何番線ですか', '何時ですか', '何枚ですか'], correct: 0, explain: '「番線（ばんせん）」是鐵路月台編號。' }
+      },
+      {
+        week: 2, day: 4, title: '轉乘與所需時間', objective: '能詢問在哪裡轉乘、下一班時間與車程。', focus: '聽答案時先抓站名；複誦一次站名加「ですね」來確認。',
+        phrases: [
+          ['どこで乗り換えますか', 'どこで のりかえますか', 'doko de norikaemasu ka', '要在哪裡轉乘？'],
+          ['新宿で乗り換えます', 'しんじゅくで のりかえます', 'Shinjuku de norikaemasu', '在新宿轉乘'],
+          ['次の電車は何時ですか', 'つぎの でんしゃは なんじですか', 'tsugi no densha wa nanji desu ka', '下一班車是幾點？'],
+          ['何分かかりますか', 'なんぷん かかりますか', 'nanpun kakarimasu ka', '需要幾分鐘？']
+        ],
+        quiz: { q: '「乗り換え」是什麼意思？', a: ['下車', '轉乘', '補票'], correct: 1, explain: '「乗り換え（のりかえ）」就是從一條路線換到另一條路線。' }
+      },
+      {
+        week: 2, day: 5, title: '巴士與計程車', objective: '能確認巴士目的地，並向司機說清楚下車地點。', focus: '計程車直接出示地圖或地址，再說「ここまでお願いします」最可靠。',
+        phrases: [
+          ['このバスは駅に行きますか', 'この バスは えきに いきますか', 'kono basu wa eki ni ikimasu ka', '這班巴士會到車站嗎？'],
+          ['バス停はどこですか', 'バスていは どこですか', 'basutei wa doko desu ka', '巴士站在哪裡？'],
+          ['ここまでお願いします', 'ここまで おねがいします', 'koko made onegaishimasu', '麻煩載我到這裡'],
+          ['ここで止めてください', 'ここで とめて ください', 'koko de tomete kudasai', '請停在這裡']
+        ],
+        quiz: { q: '上計程車後出示地圖，最適合說？', a: ['ここまでお願いします', 'ここからお願いします', 'ここはどこですか'], correct: 0, explain: '「まで」表示終點，整句就是「麻煩到這裡」。' }
+      },
+      {
+        week: 2, day: 6, title: '問路與理解方向', objective: '能問地點，並聽懂直走、左右與附近。', focus: '聽指路時只需抓「まっすぐ、右、左」和轉彎次數，不必每個字都懂。',
+        phrases: [
+          ['駅はどちらですか', 'えきは どちらですか', 'eki wa dochira desu ka', '車站在哪個方向？'],
+          ['まっすぐ行ってください', 'まっすぐ いって ください', 'massugu itte kudasai', '請直走'],
+          ['右に曲がってください', 'みぎに まがって ください', 'migi ni magatte kudasai', '請向右轉'],
+          ['地図で教えてください', 'ちずで おしえて ください', 'chizu de oshiete kudasai', '請在地圖上告訴我']
+        ],
+        quiz: { q: '對方說「まっすぐ」，你要怎麼走？', a: ['直走', '左轉', '回頭'], correct: 0, explain: '「まっすぐ」就是一直直走。' }
+      },
+      {
+        week: 2, day: 7, title: '交通任務：機場到飯店', objective: '串連買卡、確認電車、轉乘與問路四個步驟。', focus: '用地圖選一間日本飯店，從機場開始完整演一遍；每卡住一次，就重說該句三遍。',
+        phrases: [
+          ['ICカードはどこで買えますか', 'アイシーカードは どこで かえますか', 'IC kaado wa doko de kaemasu ka', 'IC 卡在哪裡買得到？'],
+          ['この電車は新宿に行きますか', 'この でんしゃは しんじゅくに いきますか', 'kono densha wa Shinjuku ni ikimasu ka', '這班電車會到新宿嗎？'],
+          ['どこで乗り換えますか', 'どこで のりかえますか', 'doko de norikaemasu ka', '要在哪裡轉乘？'],
+          ['このホテルはどちらですか', 'この ホテルは どちらですか', 'kono hoteru wa dochira desu ka', '這間飯店在哪個方向？']
+        ],
+        quiz: { q: '你不確定眼前的車是否到新宿，最安全的做法是？', a: ['先上車再說', '問「この電車は新宿に行きますか」', '只說「新宿！」'], correct: 1, explain: '完整確認目的地，最不容易因省略資訊而誤會。' }
+      },
+      {
+        week: 3, day: 1, title: '飯店入住', objective: '能表明已有預約、提供姓名並完成入住。', focus: '準備好護照和訂房畫面；說完姓名後直接出示，溝通會非常順。',
+        phrases: [
+          ['予約しています', 'よやく して います', 'yoyaku shite imasu', '我有預約'],
+          ['名前は陳です', 'なまえは ちん です', 'namae wa Chin desu', '名字是陳'],
+          ['チェックインをお願いします', 'チェックインを おねがいします', 'chekkuin o onegaishimasu', '麻煩辦理入住'],
+          ['パスポートです', 'パスポート です', 'pasupooto desu', '這是護照']
+        ],
+        quiz: { q: '到櫃檯想表明「我有預約」，先說？', a: ['予約しています', '部屋があります', '泊まりません'], correct: 0, explain: '「予約しています」表示已有預約。' }
+      },
+      {
+        week: 3, day: 2, title: '房間需求與設備問題', objective: '能詢問 Wi-Fi、加要備品，並說明設備無法使用。', focus: '設備有問題時，用物品名加「使えません」就能清楚表達。',
+        phrases: [
+          ['Wi-Fiのパスワードは何ですか', 'ワイファイの パスワードは なんですか', 'waifai no pasuwaado wa nan desu ka', 'Wi-Fi 密碼是什麼？'],
+          ['タオルをもう一枚ください', 'タオルを もう いちまい ください', 'taoru o mou ichimai kudasai', '請再給我一條毛巾'],
+          ['エアコンが使えません', 'エアコンが つかえません', 'eakon ga tsukaemasen', '冷氣不能用'],
+          ['部屋を見てもらえますか', 'へやを みて もらえますか', 'heya o mite moraemasu ka', '可以請人來看一下房間嗎？']
+        ],
+        quiz: { q: '冷氣無法使用，哪句最直接？', a: ['エアコンが使えません', 'エアコンがあります', 'エアコンをください'], correct: 0, explain: '「使えません」表示無法使用。' }
+      },
+      {
+        week: 3, day: 3, title: '進餐廳與候位', objective: '能告知人數、詢問候位時間與選擇座位。', focus: '店員常先問「何名様ですか」；兩位回答「二人です」就可以。',
+        phrases: [
+          ['二人です', 'ふたり です', 'futari desu', '兩位'],
+          ['今、入れますか', 'いま、はいれますか', 'ima hairemasu ka', '現在可以入座嗎？'],
+          ['どのくらい待ちますか', 'どのくらい まちますか', 'dono kurai machimasu ka', '大概要等多久？'],
+          ['禁煙席をお願いします', 'きんえんせきを おねがいします', 'kinenseki o onegaishimasu', '麻煩安排禁菸座']
+        ],
+        quiz: { q: '店員問「何名様ですか」，兩人要回答？', a: ['二つです', '二枚です', '二人です'], correct: 2, explain: '人數用「人」；兩人有特殊讀法「ふたり」。' }
+      },
+      {
+        week: 3, day: 4, title: '看菜單與點餐', objective: '能詢問推薦、點指定餐點並追加飲用水。', focus: '指著菜單說「これをお願いします」已經很自然；不用硬念不會的菜名。',
+        phrases: [
+          ['おすすめは何ですか', 'おすすめは なんですか', 'osusume wa nan desu ka', '有什麼推薦？'],
+          ['これをお願いします', 'これを おねがいします', 'kore o onegaishimasu', '我要這個'],
+          ['わさび抜きでお願いします', 'わさび ぬきで おねがいします', 'wasabi nuki de onegaishimasu', '請不要加芥末'],
+          ['お水をください', 'おみずを ください', 'omizu o kudasai', '請給我水']
+        ],
+        quiz: { q: '不知道菜名但能指菜單，怎麼點最自然？', a: ['これをお願いします', 'あれは何ですか', 'どこですか'], correct: 0, explain: '指著餐點說「これをお願いします」簡單又禮貌。' }
+      },
+      {
+        week: 3, day: 5, title: '飲食限制與客製需求', objective: '能詢問成分、表達過敏或不吃的食材。', focus: '嚴重過敏不要只靠口說；同時出示翻譯卡，並再次確認「入っていますか」。',
+        phrases: [
+          ['これは何が入っていますか', 'これは なにが はいっていますか', 'kore wa nani ga haitte imasu ka', '這裡面有什麼？'],
+          ['卵アレルギーがあります', 'たまご アレルギーが あります', 'tamago arerugii ga arimasu', '我對蛋過敏'],
+          ['肉は食べません', 'にくは たべません', 'niku wa tabemasen', '我不吃肉'],
+          ['辛いですか', 'からい ですか', 'karai desu ka', '會辣嗎？']
+        ],
+        quiz: { q: '想問餐點裡有什麼，應該說？', a: ['何が入っていますか', '何を食べますか', '何時までですか'], correct: 0, explain: '「入っていますか」用來問是否含有、放入某種成分。' }
+      },
+      {
+        week: 3, day: 6, title: '結帳與付款', objective: '能請店員結帳、確認付款方式與索取收據。', focus: '日本有些餐廳在座位結帳，有些拿帳單到櫃檯；先觀察再說「お会計お願いします」。',
+        phrases: [
+          ['お会計をお願いします', 'おかいけいを おねがいします', 'okaikei o onegaishimasu', '麻煩結帳'],
+          ['別々に払えますか', 'べつべつに はらえますか', 'betsubetsu ni haraemasu ka', '可以分開付款嗎？'],
+          ['カードで払えますか', 'カードで はらえますか', 'kaado de haraemasu ka', '可以刷卡嗎？'],
+          ['領収書をください', 'りょうしゅうしょを ください', 'ryoushuusho o kudasai', '請給我收據']
+        ],
+        quiz: { q: '想和旅伴分開付款，要問？', a: ['一緒に払えますか', '別々に払えますか', '後で払えますか'], correct: 1, explain: '「別々に」表示分開、各自。' }
+      },
+      {
+        week: 3, day: 7, title: '住宿＋用餐角色扮演', objective: '完成入住、提出房間需求、進餐廳、點餐與付款。', focus: '今天把手機放遠，用四張紙分別寫「櫃檯、房間、餐廳、結帳」輪流演。',
+        phrases: [
+          ['予約しています。チェックインをお願いします', 'よやく して います。チェックインを おねがいします', 'yoyaku shite imasu. chekkuin o onegaishimasu', '我有預約，麻煩辦理入住'],
+          ['タオルをもう一枚ください', 'タオルを もう いちまい ください', 'taoru o mou ichimai kudasai', '請再給我一條毛巾'],
+          ['おすすめは何ですか', 'おすすめは なんですか', 'osusume wa nan desu ka', '有什麼推薦？'],
+          ['お会計をお願いします', 'おかいけいを おねがいします', 'okaikei o onegaishimasu', '麻煩結帳']
+        ],
+        quiz: { q: '完整用餐流程的順序最合理的是？', a: ['人數→點餐→結帳', '結帳→人數→點餐', '點餐→入住→人數'], correct: 0, explain: '先回覆人數入座，再點餐，最後結帳。' }
+      },
+      {
+        week: 4, day: 1, title: '詢價、試用與比較', objective: '能詢問價格、試穿試用，並比較兩件商品。', focus: '店員問「いかがですか」是在問感覺如何；不買也可禮貌說「少し考えます」。',
+        phrases: [
+          ['これはいくらですか', 'これは いくらですか', 'kore wa ikura desu ka', '這個多少錢？'],
+          ['試着してもいいですか', 'しちゃく しても いいですか', 'shichaku shite mo ii desu ka', '可以試穿嗎？'],
+          ['どちらが人気ですか', 'どちらが にんきですか', 'dochira ga ninki desu ka', '哪一個比較受歡迎？'],
+          ['少し考えます', 'すこし かんがえます', 'sukoshi kangaemasu', '我再考慮一下']
+        ],
+        quiz: { q: '想試穿衣服，要說？', a: ['試着してもいいですか', '食べてもいいですか', '使えませんか'], correct: 0, explain: '「試着（しちゃく）」就是試穿。' }
+      },
+      {
+        week: 4, day: 2, title: '尺寸、顏色與庫存', objective: '能詢問其他尺寸、顏色與是否還有庫存。', focus: '指著商品說「これの」再接尺寸或顏色，即使不知道品名也能問。',
+        phrases: [
+          ['もう少し大きいサイズはありますか', 'もう すこし おおきい サイズは ありますか', 'mou sukoshi ookii saizu wa arimasu ka', '有再大一點的尺寸嗎？'],
+          ['小さいサイズはありますか', 'ちいさい サイズは ありますか', 'chiisai saizu wa arimasu ka', '有小尺寸嗎？'],
+          ['他の色はありますか', 'ほかの いろは ありますか', 'hoka no iro wa arimasu ka', '有其他顏色嗎？'],
+          ['在庫はありますか', 'ざいこは ありますか', 'zaiko wa arimasu ka', '還有庫存嗎？']
+        ],
+        quiz: { q: '想問「有其他顏色嗎」，要說？', a: ['他の色はありますか', 'この色は何ですか', '色は大丈夫です'], correct: 0, explain: '「他の」表示其他的，「色」是顏色。' }
+      },
+      {
+        week: 4, day: 3, title: '免稅、付款與包裝', objective: '能詢問免稅條件、付款方式與是否可包裝。', focus: '辦免稅通常需要護照；結帳前先準備好，並留意商品在日本境內的使用限制。',
+        phrases: [
+          ['免税できますか', 'めんぜい できますか', 'menzei dekimasu ka', '可以免稅嗎？'],
+          ['免税カウンターはどこですか', 'めんぜい カウンターは どこですか', 'menzei kauntaa wa doko desu ka', '免稅櫃檯在哪裡？'],
+          ['現金で払います', 'げんきんで はらいます', 'genkin de haraimasu', '我用現金付款'],
+          ['プレゼント用にできますか', 'プレゼントように できますか', 'purezento you ni dekimasu ka', '可以包成禮物嗎？']
+        ],
+        quiz: { q: '「免税」的讀音是？', a: ['めんぜい', 'むりょう', 'げんきん'], correct: 0, explain: '「免税（めんぜい）」就是免稅。' }
+      },
+      {
+        week: 4, day: 4, title: '便利商店與外帶', objective: '能回答是否需要袋子、餐具與是否加熱。', focus: '店員問題很快，抓「袋、温め、お箸」三個名詞；需要就說「お願いします」。',
+        phrases: [
+          ['袋をお願いします', 'ふくろを おねがいします', 'fukuro o onegaishimasu', '需要袋子'],
+          ['袋はいりません', 'ふくろは いりません', 'fukuro wa irimasen', '不需要袋子'],
+          ['温めてください', 'あたためて ください', 'atatamete kudasai', '請幫我加熱'],
+          ['お箸をください', 'おはしを ください', 'ohashi o kudasai', '請給我筷子']
+        ],
+        quiz: { q: '不需要塑膠袋，怎麼說？', a: ['袋をください', '袋はいりません', '袋があります'], correct: 1, explain: '「いりません」表示不需要。' }
+      },
+      {
+        week: 4, day: 5, title: '景點購票與開放時間', objective: '能買票、詢問入口與最晚入場時間。', focus: '售票處是「チケット売り場」；入口是「入口（いりぐち）」，出口是「出口（でぐち）」。',
+        phrases: [
+          ['大人二枚お願いします', 'おとな にまい おねがいします', 'otona nimai onegaishimasu', '請給我兩張成人票'],
+          ['入口はどこですか', 'いりぐちは どこですか', 'iriguchi wa doko desu ka', '入口在哪裡？'],
+          ['最終入場は何時ですか', 'さいしゅう にゅうじょうは なんじですか', 'saishuu nyuujou wa nanji desu ka', '最晚入場是幾點？'],
+          ['今日は開いていますか', 'きょうは あいて いますか', 'kyou wa aite imasu ka', '今天有開放嗎？']
+        ],
+        quiz: { q: '想買兩張成人票，要用哪個量詞？', a: ['二人', '二枚', '二本'], correct: 1, explain: '票券以「枚」計算。' }
+      },
+      {
+        week: 4, day: 6, title: '拍照、規範與遺失物', objective: '能詢問能否拍照，並向服務人員描述遺失物。', focus: '看到「禁止（きんし）」就先停下來確認；遺失時說清楚物品、時間、地點。',
+        phrases: [
+          ['写真を撮ってもいいですか', 'しゃしんを とっても いいですか', 'shashin o totte mo ii desu ka', '可以拍照嗎？'],
+          ['ここに入ってもいいですか', 'ここに はいっても いいですか', 'koko ni haitte mo ii desu ka', '可以進去這裡嗎？'],
+          ['財布をなくしました', 'さいふを なくしました', 'saifu o nakushimashita', '我弄丟錢包了'],
+          ['落とし物センターはどこですか', 'おとしもの センターは どこですか', 'otoshimono sentaa wa doko desu ka', '失物招領中心在哪裡？']
+        ],
+        quiz: { q: '想先確認是否可拍照，要說？', a: ['写真を撮ってもいいですか', '写真をください', '写真がありません'], correct: 0, explain: '「～てもいいですか」用來詢問是否被允許。' }
+      },
+      {
+        week: 4, day: 7, title: '購物＋景點角色扮演', objective: '完成試穿、詢問庫存、免稅結帳與景點購票。', focus: '設定五千日圓預算，模擬挑選一件衣服，再買兩張景點門票。',
+        phrases: [
+          ['試着してもいいですか', 'しちゃく しても いいですか', 'shichaku shite mo ii desu ka', '可以試穿嗎？'],
+          ['他の色はありますか', 'ほかの いろは ありますか', 'hoka no iro wa arimasu ka', '有其他顏色嗎？'],
+          ['免税できますか', 'めんぜい できますか', 'menzei dekimasu ka', '可以免稅嗎？'],
+          ['大人二枚お願いします', 'おとな にまい おねがいします', 'otona nimai onegaishimasu', '請給我兩張成人票']
+        ],
+        quiz: { q: '購物後決定不買，最禮貌自然的說法是？', a: ['少し考えます', 'いりません！', '高いです！'], correct: 0, explain: '「少し考えます」語氣柔和，表示再考慮一下。' }
+      },
+      {
+        week: 5, day: 1, title: '聽不懂與確認資訊', objective: '能請對方重說、放慢、寫下來並確認自己的理解。', focus: '先重複你聽到的部分，再加「ですね」確認，比完全沉默更有效。',
+        phrases: [
+          ['もう一度言ってください', 'もう いちど いって ください', 'mou ichido itte kudasai', '請再說一次'],
+          ['もう少しゆっくりお願いします', 'もう すこし ゆっくり おねがいします', 'mou sukoshi yukkuri onegaishimasu', '請再慢一點'],
+          ['ここに書いてください', 'ここに かいて ください', 'koko ni kaite kudasai', '請寫在這裡'],
+          ['三番線ですね', 'さんばんせん です ね', 'sanbansen desu ne', '是第三月台，對吧？']
+        ],
+        quiz: { q: '你聽到可能是第三月台，想確認要說？', a: ['三番線ですね', '三番線でした', '三番線はどこ'], correct: 0, explain: '句尾「ですね」可用來核對剛聽到的資訊。' }
+      },
+      {
+        week: 5, day: 2, title: '身體不舒服與看診', objective: '能說出主要症狀、持續時間並詢問醫院。', focus: '先說最嚴重的症狀，再用手勢指出部位；若症狀危急請直接撥 119。',
+        phrases: [
+          ['気分が悪いです', 'きぶんが わるいです', 'kibun ga warui desu', '我不舒服'],
+          ['頭が痛いです', 'あたまが いたいです', 'atama ga itai desu', '我頭痛'],
+          ['昨日から熱があります', 'きのうから ねつが あります', 'kinou kara netsu ga arimasu', '從昨天開始發燒'],
+          ['近くに病院はありますか', 'ちかくに びょういんは ありますか', 'chikaku ni byouin wa arimasu ka', '附近有醫院嗎？']
+        ],
+        quiz: { q: '「頭が痛いです」表示？', a: ['肚子痛', '頭痛', '喉嚨痛'], correct: 1, explain: '「頭（あたま）」是頭，「痛い」是疼痛。' }
+      },
+      {
+        week: 5, day: 3, title: '在藥局買藥', objective: '能描述症狀、詢問用法與可能的嗜睡副作用。', focus: '用藥前務必確認次數、劑量與禁忌；有慢性病或懷孕時主動告知藥師。',
+        phrases: [
+          ['風邪薬はありますか', 'かぜぐすりは ありますか', 'kazegusuri wa arimasu ka', '有感冒藥嗎？'],
+          ['一日何回飲みますか', 'いちにち なんかい のみますか', 'ichinichi nankai nomimasu ka', '一天吃幾次？'],
+          ['食後に飲みますか', 'しょくごに のみますか', 'shokugo ni nomimasu ka', '飯後服用嗎？'],
+          ['眠くなりますか', 'ねむく なりますか', 'nemuku narimasu ka', '會想睡嗎？']
+        ],
+        quiz: { q: '想確認藥是否會讓人想睡，要問？', a: ['眠くなりますか', '熱がありますか', '食べられますか'], correct: 0, explain: '「眠くなる」是變得想睡、產生睡意。' }
+      },
+      {
+        week: 5, day: 4, title: '遺失物與警察局', objective: '能說明遺失物品、最後看到的地點並尋求警方協助。', focus: '先冷靜列出顏色、品牌、內容物和最後使用時間；這些比長句更重要。',
+        phrases: [
+          ['パスポートをなくしました', 'パスポートを なくしました', 'pasupooto o nakushimashita', '我的護照弄丟了'],
+          ['駅で落としたかもしれません', 'えきで おとした かも しれません', 'eki de otoshita kamo shiremasen', '可能掉在車站'],
+          ['黒い財布です', 'くろい さいふです', 'kuroi saifu desu', '是黑色錢包'],
+          ['交番はどこですか', 'こうばんは どこですか', 'kouban wa doko desu ka', '派出所在哪裡？']
+        ],
+        quiz: { q: '日本街頭的小型派出所叫什麼？', a: ['病院', '交番', '役所'], correct: 1, explain: '「交番（こうばん）」是派出所，可協助迷路與遺失物。' }
+      },
+      {
+        week: 5, day: 5, title: '延誤、停駛與改道', objective: '能確認列車狀況、替代路線與票券處理方式。', focus: '車站廣播難度很高，不必硬聽；直接把目的地畫面給站務員看並問替代方式。',
+        phrases: [
+          ['電車が遅れていますか', 'でんしゃが おくれて いますか', 'densha ga okurete imasu ka', '電車誤點了嗎？'],
+          ['運転を見合わせていますか', 'うんてんを みあわせて いますか', 'unten o miawasete imasu ka', '目前停駛嗎？'],
+          ['他の行き方はありますか', 'ほかの いきかたは ありますか', 'hoka no ikikata wa arimasu ka', '有其他走法嗎？'],
+          ['この切符は使えますか', 'この きっぷは つかえますか', 'kono kippu wa tsukaemasu ka', '這張票還能用嗎？']
+        ],
+        quiz: { q: '遇到停駛，想問替代路線要說？', a: ['他の行き方はありますか', '次はどこですか', '切符を二枚ください'], correct: 0, explain: '「他の行き方」就是其他前往方式。' }
+      },
+      {
+        week: 5, day: 6, title: '災害、避難與緊急求助', objective: '能理解避難關鍵字，並詢問安全地點或呼叫救護車。', focus: '遇到災害先依官方指示行動。緊急電話：警察 110、消防與救護車 119。',
+        phrases: [
+          ['安全な場所はどこですか', 'あんぜんな ばしょは どこですか', 'anzen na basho wa doko desu ka', '安全的地方在哪裡？'],
+          ['避難所はどこですか', 'ひなんじょは どこですか', 'hinanjo wa doko desu ka', '避難所在哪裡？'],
+          ['救急車を呼んでください', 'きゅうきゅうしゃを よんで ください', 'kyuukyuusha o yonde kudasai', '請叫救護車'],
+          ['助けてください', 'たすけて ください', 'tasukete kudasai', '請幫幫我']
+        ],
+        quiz: { q: '在日本需要消防車或救護車，應撥？', a: ['110', '119', '911'], correct: 1, explain: '119 是消防與救護；110 是警察。' }
+      },
+      {
+        week: 5, day: 7, title: '問題求助壓力演練', objective: '在時間壓力下說出「問題＋地點／時間＋請求」。', focus: '每題只給自己十秒：錢包遺失、發燒、電車停駛。先求清楚，不求句子華麗。',
+        phrases: [
+          ['財布をなくしました。助けてください', 'さいふを なくしました。たすけて ください', 'saifu o nakushimashita. tasukete kudasai', '我弄丟錢包了，請幫幫我'],
+          ['昨日から熱があります', 'きのうから ねつが あります', 'kinou kara netsu ga arimasu', '從昨天開始發燒'],
+          ['他の行き方はありますか', 'ほかの いきかたは ありますか', 'hoka no ikikata wa arimasu ka', '有其他走法嗎？'],
+          ['ここに書いてください', 'ここに かいて ください', 'koko ni kaite kudasai', '請寫在這裡']
+        ],
+        quiz: { q: '描述問題最有效的基本順序是？', a: ['道歉很多次→沉默', '問題→地點或時間→請求', '只說一個名詞'], correct: 1, explain: '清楚說出發生什麼、在哪裡或何時、需要什麼協助。' }
+      },
+      {
+        week: 6, day: 1, title: '實戰一：落地日本', objective: '不看中文，完成入境、領行李、買交通卡三段對話。', focus: '今天開始減少輸入、增加輸出：每句先自己說，再按播放鍵核對節奏。',
+        phrases: [
+          ['観光です。六日間です', 'かんこう です。むいかかん です', 'kankou desu. muikakan desu', '觀光，停留六天'],
+          ['荷物受取はどこですか', 'にもつ うけとりは どこですか', 'nimotsu uketori wa doko desu ka', '行李領取處在哪裡？'],
+          ['ICカードはどこで買えますか', 'アイシーカードは どこで かえますか', 'IC kaado wa doko de kaemasu ka', 'IC 卡在哪裡買得到？'],
+          ['チャージをお願いします', 'チャージを おねがいします', 'chaaji o onegaishimasu', '麻煩幫我儲值']
+        ],
+        quiz: { q: '落地後的合理順序是？', a: ['入境→領行李→交通', '交通→入境→領行李', '領行李→交通→入境'], correct: 0, explain: '先完成入境審查，再領取行李，最後處理進市區的交通。' }
+      },
+      {
+        week: 6, day: 2, title: '實戰二：複雜轉乘', objective: '從任一機場規劃到飯店，口說確認月台、轉乘與方向。', focus: '在真實地圖上挑一條需要轉乘的路線；站名可以指畫面，不必全部會念。',
+        phrases: [
+          ['この電車は渋谷に行きますか', 'この でんしゃは しぶやに いきますか', 'kono densha wa Shibuya ni ikimasu ka', '這班電車會到澀谷嗎？'],
+          ['どこで乗り換えますか', 'どこで のりかえますか', 'doko de norikaemasu ka', '要在哪裡轉乘？'],
+          ['何番線ですか', 'なんばんせん ですか', 'nanbansen desu ka', '是第幾月台？'],
+          ['地図で教えてください', 'ちずで おしえて ください', 'chizu de oshiete kudasai', '請在地圖上告訴我']
+        ],
+        quiz: { q: '站務員回答太快時，下一句應該是？', a: ['分かったふりをする', 'もう少しゆっくりお願いします', '大丈夫です'], correct: 1, explain: '主動請對方放慢，遠比猜測月台安全。' }
+      },
+      {
+        week: 6, day: 3, title: '實戰三：入住與晚餐', objective: '從飯店入住一路演到餐廳結帳，至少連說兩句。', focus: '練習把句子接起來：先說情況，再說請求，例如「予約しています。チェックインをお願いします」。',
+        phrases: [
+          ['予約しています。名前は陳です', 'よやく して います。なまえは ちん です', 'yoyaku shite imasu. namae wa Chin desu', '我有預約，名字是陳'],
+          ['Wi-Fiのパスワードは何ですか', 'ワイファイの パスワードは なんですか', 'waifai no pasuwaado wa nan desu ka', 'Wi-Fi 密碼是什麼？'],
+          ['二人です。これをお願いします', 'ふたり です。これを おねがいします', 'futari desu. kore o onegaishimasu', '兩位，我要這個'],
+          ['お会計をお願いします', 'おかいけいを おねがいします', 'okaikei o onegaishimasu', '麻煩結帳']
+        ],
+        quiz: { q: '把兩句接起來時，最重要的是？', a: ['說得很快', '情況與請求都清楚', '使用困難文法'], correct: 1, explain: '旅遊溝通重點是資訊清楚；慢慢說也完全沒問題。' }
+      },
+      {
+        week: 6, day: 4, title: '實戰四：購物與景點', objective: '完成試穿、詢問尺寸、免稅與景點購票。', focus: '今天把中文翻譯藏起來；只看「試穿、尺寸、免稅、兩張票」四個提示詞完成口說。',
+        phrases: [
+          ['試着してもいいですか', 'しちゃく しても いいですか', 'shichaku shite mo ii desu ka', '可以試穿嗎？'],
+          ['もう少し大きいサイズはありますか', 'もう すこし おおきい サイズは ありますか', 'mou sukoshi ookii saizu wa arimasu ka', '有再大一點的尺寸嗎？'],
+          ['免税できますか', 'めんぜい できますか', 'menzei dekimasu ka', '可以免稅嗎？'],
+          ['大人二枚お願いします', 'おとな にまい おねがいします', 'otona nimai onegaishimasu', '請給我兩張成人票']
+        ],
+        quiz: { q: '哪一句同時包含「比較」和「詢問庫存」的概念？', a: ['もう少し大きいサイズはありますか', 'これはいくらですか', '入口はどこですか'], correct: 0, explain: '「もう少し大きい」是再大一點，「ありますか」是有嗎。' }
+      },
+      {
+        week: 6, day: 5, title: '實戰五：意外狀況', objective: '抽題後十秒內說出遺失、身體不適或交通中斷的求助句。', focus: '建立你的三張離線求助卡：護照遺失、常見病史／過敏、飯店地址。',
+        phrases: [
+          ['パスポートをなくしました', 'パスポートを なくしました', 'pasupooto o nakushimashita', '我的護照弄丟了'],
+          ['気分が悪いです。助けてください', 'きぶんが わるいです。たすけて ください', 'kibun ga warui desu. tasukete kudasai', '我不舒服，請幫幫我'],
+          ['他の行き方はありますか', 'ほかの いきかたは ありますか', 'hoka no ikikata wa arimasu ka', '有其他走法嗎？'],
+          ['簡単な日本語でお願いします', 'かんたんな にほんごで おねがいします', 'kantan na nihongo de onegaishimasu', '請用簡單的日語']
+        ],
+        quiz: { q: '緊急時對方聽不懂你，優先做什麼？', a: ['說得更快', '重複同一句很多次', '放慢、用關鍵詞並出示資訊'], correct: 2, explain: '關鍵詞、手勢和書面資訊搭配，成功率最高。' }
+      },
+      {
+        week: 6, day: 6, title: '最終模擬：一日全日語旅行', objective: '完成 8 個情境節點，全程只用已學句型與手勢。', focus: '八站任務：車站→問路→景點→午餐→購物→飯店→突發狀況→道謝。每站限時 60 秒。',
+        phrases: [
+          ['すみません、駅はどちらですか', 'すみません、えきは どちらですか', 'sumimasen, eki wa dochira desu ka', '不好意思，車站在哪個方向？'],
+          ['おすすめは何ですか。これをお願いします', 'おすすめは なんですか。これを おねがいします', 'osusume wa nan desu ka. kore o onegaishimasu', '有什麼推薦？我要這個'],
+          ['写真を撮ってもいいですか', 'しゃしんを とっても いいですか', 'shashin o totte mo ii desu ka', '可以拍照嗎？'],
+          ['ありがとうございます。助かりました', 'ありがとうございます。たすかりました', 'arigatou gozaimasu. tasukarimashita', '非常謝謝，幫了大忙']
+        ],
+        quiz: { q: '八站任務卡住時的過關策略是？', a: ['停下並放棄', '用簡單句、手勢、畫面與確認句', '改說很長的中文'], correct: 1, explain: '自由行語言能力是解決問題，不是無錯地背誦。' }
+      },
+      {
+        week: 6, day: 7, title: '出發日：最後檢查與回程', objective: '確認自己能完成 12 個核心任務，並學會退房與前往機場。', focus: '不用再塞新單字。列印救命句、下載離線地圖、保存飯店地址，今晚早點休息。',
+        phrases: [
+          ['チェックアウトをお願いします', 'チェックアウトを おねがいします', 'chekkuauto o onegaishimasu', '麻煩辦理退房'],
+          ['荷物を預かってもらえますか', 'にもつを あずかって もらえますか', 'nimotsu o azukatte moraemasu ka', '可以幫我寄放行李嗎？'],
+          ['空港までお願いします', 'くうこうまで おねがいします', 'kuukou made onegaishimasu', '麻煩載我到機場'],
+          ['ありがとうございます。また来ます', 'ありがとうございます。また きます', 'arigatou gozaimasu. mata kimasu', '謝謝，我還會再來']
+        ],
+        quiz: { q: '六週課程真正的完成標準是？', a: ['背完所有句子', '敢用關鍵句確認、請求與求助', '完全不需要翻譯工具'], correct: 1, explain: '能主動開口、確認資訊並處理問題，就已足以讓自由行更順暢。' }
+      }
+    ];
+
+    const quickPhrases = [
+      ['不好意思／麻煩你', 'すみません', 'すみません'],
+      ['非常謝謝你', 'ありがとうございます', 'ありがとうございます'],
+      ['請再說一次', 'もう一度お願いします', 'もう いちど おねがいします'],
+      ['請說慢一點', 'ゆっくりお願いします', 'ゆっくり おねがいします'],
+      ['請寫在這裡', 'ここに書いてください', 'ここに かいて ください'],
+      ['我聽不懂', '分かりません', 'わかりません'],
+      ['廁所在哪裡？', 'トイレはどこですか', 'トイレは どこですか'],
+      ['車站在哪裡？', '駅はどこですか', 'えきは どこですか'],
+      ['這班車會到～嗎？', 'この電車は～に行きますか', 'この でんしゃは～に いきますか'],
+      ['要在哪裡轉乘？', 'どこで乗り換えますか', 'どこで のりかえますか'],
+      ['麻煩載我到這裡', 'ここまでお願いします', 'ここまで おねがいします'],
+      ['我有預約', '予約しています', 'よやく して います'],
+      ['麻煩辦理入住', 'チェックインをお願いします', 'チェックインを おねがいします'],
+      ['兩位', '二人です', 'ふたり です'],
+      ['請給我這個', 'これをください', 'これを ください'],
+      ['有什麼推薦？', 'おすすめは何ですか', 'おすすめは なんですか'],
+      ['麻煩結帳', 'お会計をお願いします', 'おかいけいを おねがいします'],
+      ['可以刷卡嗎？', 'カードで払えますか', 'カードで はらえますか'],
+      ['可以免稅嗎？', '免税できますか', 'めんぜい できますか'],
+      ['可以拍照嗎？', '写真を撮ってもいいですか', 'しゃしんを とっても いいですか'],
+      ['我迷路了', '道に迷いました', 'みちに まよいました'],
+      ['我弄丟護照了', 'パスポートをなくしました', 'パスポートを なくしました'],
+      ['我不舒服', '気分が悪いです', 'きぶんが わるいです'],
+      ['附近有醫院嗎？', '近くに病院はありますか', 'ちかくに びょういんは ありますか'],
+      ['請叫救護車', '救急車を呼んでください', 'きゅうきゅうしゃを よんで ください'],
+      ['請幫幫我', '助けてください', 'たすけて ください'],
+      ['派出所在哪裡？', '交番はどこですか', 'こうばんは どこですか'],
+      ['有其他走法嗎？', '他の行き方はありますか', 'ほかの いきかたは ありますか']
+    ];
+
+    function getSavedDone() {
+      try {
+        const value = JSON.parse(localStorage.getItem('travel-jp-done') || '[]');
+        return Array.isArray(value) ? value : [];
+      } catch { return []; }
+    }
+
+    const savedWeek = Number(localStorage.getItem('travel-jp-week'));
+    const savedDay = Number(localStorage.getItem('travel-jp-day'));
+    const state = {
+      week: savedWeek >= 1 && savedWeek <= 6 ? savedWeek : 1,
+      day: savedDay >= 1 && savedDay <= 7 ? savedDay : 1,
+      done: getSavedDone()
+    };
+
+    const $ = (selector) => document.querySelector(selector);
+    const lessonKey = (lesson) => `${lesson.week}-${lesson.day}`;
+
+    function saveState() {
+      localStorage.setItem('travel-jp-week', state.week);
+      localStorage.setItem('travel-jp-day', state.day);
+      localStorage.setItem('travel-jp-done', JSON.stringify(state.done));
+    }
+
+    function renderWeeks() {
+      const makeButton = (week, index) => {
+        const available = lessons.some(item => item.week === index + 1);
+        return `<button class="week-button ${state.week === index + 1 ? 'active' : ''}" data-week="${index + 1}" ${available ? '' : 'disabled'}>
+          <span class="week-number">${index + 1}</span><span class="week-copy"><strong>${week.short}</strong><small>${available ? week.title : '課程整理中'}</small></span>
+        </button>`;
+      };
+      $('#weekNav').innerHTML = weeks.map(makeButton).join('');
+      $('#mobileWeeks').innerHTML = weeks.map(makeButton).join('');
+      document.querySelectorAll('[data-week]').forEach(button => button.addEventListener('click', () => {
+        state.week = Number(button.dataset.week); state.day = 1; saveState(); render();
+      }));
+    }
+
+    function renderDayStrip() {
+      const weekLessons = lessons.filter(item => item.week === state.week);
+      $('#dayStrip').innerHTML = weekLessons.map(item => {
+        const done = state.done.includes(lessonKey(item));
+        return `<button class="day-tab ${state.day === item.day ? 'active' : ''} ${done ? 'done' : ''}" role="tab" aria-selected="${state.day === item.day}" data-day="${item.day}"><strong>Day ${item.day}</strong><span>${item.title}</span></button>`;
+      }).join('');
+      document.querySelectorAll('[data-day]').forEach(button => button.addEventListener('click', () => {
+        state.day = Number(button.dataset.day); saveState(); render();
+      }));
+    }
+
+    function renderLesson() {
+      const item = lessons.find(lesson => lesson.week === state.week && lesson.day === state.day) || lessons[0];
+      const done = state.done.includes(lessonKey(item));
+      const date = getLessonDate(item.week, item.day);
+      $('#lesson').innerHTML = `
+        <header class="lesson-header">
+          <div><p class="lesson-kicker">DAY ${(item.week - 1) * 7 + item.day}${date ? ` · ${date}` : ''}</p><h3>${item.title}</h3><p class="lesson-goal">今日任務：${item.objective}</p></div>
+          <button class="complete-button ${done ? 'done' : ''}" id="completeButton" type="button">${done ? '✓ 已完成' : '○ 標記完成'}</button>
+        </header>
+        <div class="time-plan">
+          <div class="time-block"><strong>5 分鐘</strong><span>${item.week === 1 && item.day === 1 ? '五十音聲音暖身' : '朗讀昨日句子'}</span></div>
+          <div class="time-block"><strong>10 分鐘</strong><span>跟讀今日 4 句</span></div>
+          <div class="time-block"><strong>10 分鐘</strong><span>遮住中文口說</span></div>
+          <div class="time-block"><strong>5 分鐘</strong><span>完成情境題</span></div>
+        </div>
+        <div class="tip"><strong>今天只記一件事：</strong> ${item.focus}</div>
+        <h4 class="section-title">今天必會的 4 句</h4>
+        <div class="phrase-list">${item.phrases.map(phrase => `
+          <div class="phrase"><div><div class="jp">${phrase[0]} <span class="reading">${phrase[1]}</span></div><div class="romaji">${phrase[2]}</div><div class="meaning">${phrase[3]}</div></div><button class="speak-button" data-speak="${phrase[0]}" aria-label="播放 ${phrase[0]}"></button></div>
+        `).join('')}</div>
+        <h4 class="section-title">5 分鐘情境題</h4>
+        <div class="practice"><p><strong>${item.quiz.q}</strong></p><div class="answer-grid">${item.quiz.a.map((answer, index) => `<button class="answer-button" data-answer="${index}" type="button">${answer}</button>`).join('')}</div><p class="feedback" id="quizFeedback"></p></div>
+      `;
+      $('#completeButton').addEventListener('click', () => toggleComplete(item));
+      document.querySelectorAll('[data-speak]').forEach(button => button.addEventListener('click', () => speak(button.dataset.speak)));
+      document.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => checkAnswer(item, button)));
+    }
+
+    function toggleComplete(item) {
+      const key = lessonKey(item);
+      state.done = state.done.includes(key) ? state.done.filter(value => value !== key) : [...state.done, key];
+      saveState(); render();
+    }
+
+    function checkAnswer(item, selected) {
+      document.querySelectorAll('[data-answer]').forEach(button => {
+        button.disabled = true;
+        const index = Number(button.dataset.answer);
+        if (index === item.quiz.correct) button.classList.add('correct');
+        else if (button === selected) button.classList.add('wrong');
+      });
+      const right = Number(selected.dataset.answer) === item.quiz.correct;
+      $('#quizFeedback').textContent = `${right ? '答對了。' : '再看一次。'} ${item.quiz.explain}`;
+    }
+
+    function speak(text) {
+      if (!('speechSynthesis' in window)) return alert('這個瀏覽器不支援語音播放。');
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'ja-JP'; utterance.rate = .82;
+      speechSynthesis.speak(utterance);
+    }
+
+    function getLessonDate(week, day) {
+      const value = $('#startDate').value;
+      if (!value) return '';
+      const date = new Date(`${value}T12:00:00`);
+      date.setDate(date.getDate() + (week - 1) * 7 + day - 1);
+      return new Intl.DateTimeFormat('zh-TW', { month: 'numeric', day: 'numeric', weekday: 'short' }).format(date);
+    }
+
+    function renderProgress() {
+      const percent = Math.round(state.done.length / 42 * 100);
+      $('#progressRing').style.setProperty('--progress', `${percent}%`);
+      $('#progressPercent').textContent = `${percent}%`;
+      $('#progressCount').textContent = `${state.done.length} / 42 日`;
+      if (state.done.length >= 42) {
+        $('#progressTitle').textContent = '準備好了，旅途上見。';
+        $('#progressHint').textContent = '接下來只要把句子帶進真實情境。';
+      } else if (state.done.length >= 21) {
+        $('#progressTitle').textContent = '你已經走過一半。';
+        $('#progressHint').textContent = '開始把兩句接起來說，反應會越來越自然。';
+      }
+    }
+
+    function renderQuickPhrases(query = '') {
+      const keyword = query.trim().toLowerCase();
+      const filtered = quickPhrases.filter(item => item.join(' ').toLowerCase().includes(keyword));
+      $('#quickList').innerHTML = filtered.length ? filtered.map(item => `<div class="quick-item"><div><strong>${item[1]}</strong><small>${item[0]} · ${item[2]}</small></div><button class="speak-button" data-quick-speak="${item[1]}" aria-label="播放 ${item[1]}"></button></div>`).join('') : '<div class="empty">找不到這句，換個關鍵字試試看。</div>';
+      document.querySelectorAll('[data-quick-speak]').forEach(button => button.addEventListener('click', () => speak(button.dataset.quickSpeak)));
+    }
+
+    function render() {
+      const week = weeks[state.week - 1];
+      $('#weekEyebrow').textContent = `Week ${state.week}`;
+      $('#weekTitle').textContent = week.title;
+      $('#weekDescription').textContent = week.description;
+      $('#weekBadge').textContent = `目標：${week.badge}`;
+      renderWeeks(); renderDayStrip(); renderLesson(); renderProgress();
+    }
+
+    $('#romajiToggle').addEventListener('change', (event) => {
+      document.body.classList.toggle('show-romaji', event.target.checked);
+      localStorage.setItem('travel-jp-romaji', event.target.checked ? '1' : '0');
+    });
+    $('#printButton').addEventListener('click', () => window.print());
+    $('#phraseSearch').addEventListener('input', event => renderQuickPhrases(event.target.value));
+    $('#startDate').addEventListener('change', event => { localStorage.setItem('travel-jp-start', event.target.value); renderLesson(); });
+
+    const savedDate = localStorage.getItem('travel-jp-start');
+    const now = new Date();
+    const localToday = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    $('#startDate').value = savedDate || localToday;
+    $('#romajiToggle').checked = localStorage.getItem('travel-jp-romaji') === '1';
+    document.body.classList.toggle('show-romaji', $('#romajiToggle').checked);
+    renderQuickPhrases(); render();
+  </script>
+</body>
+</html>
