@@ -115,6 +115,17 @@
     .time-block span { color: var(--muted); font-size: .72rem; }
 
     .section-title { margin: 28px 0 12px; font-size: .78rem; font-weight: 900; letter-spacing: .13em; color: var(--muted); text-transform: uppercase; }
+    .material-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .material-card { padding: 15px 16px; border: 1px solid var(--line); border-radius: 16px; background: #f8f7f2; }
+    .material-card h5 { margin: 0 0 9px; color: var(--green); font-size: .8rem; letter-spacing: .08em; }
+    .vocab-list { display: grid; gap: 7px; }
+    .vocab-row { display: grid; grid-template-columns: auto 1fr auto; gap: 9px; align-items: center; }
+    .vocab-jp { font-family: "Yu Mincho", "Noto Serif JP", serif; font-size: 1.06rem; font-weight: 700; }
+    .vocab-reading { color: var(--muted); font-size: .76rem; }
+    .vocab-meaning { color: var(--ink); font-size: .82rem; }
+    .vocab-row .speak-button { width: 30px; }
+    .rule { margin: 0; color: var(--ink); font-size: .9rem; }
+    .guided { margin: 0; color: var(--muted); font-size: .87rem; }
     .tip { padding: 15px 17px; border-left: 4px solid var(--gold); border-radius: 0 14px 14px 0; background: #f7f0df; }
     .tip strong { color: #805d22; }
     .phrase-list { display: grid; gap: 10px; }
@@ -136,7 +147,8 @@
     .answer-button.wrong { background: #883f39; }
     .feedback { min-height: 1.6em; margin: 10px 0 0 !important; font-weight: 800; }
 
-    .phrasebook { margin-top: 26px; padding: clamp(22px, 4vw, 34px); border: 1px solid var(--line); border-radius: 26px; background: #ebe6da; }
+    .phrasebook { margin: 0 0 24px; padding: clamp(22px, 4vw, 34px); border: 1px solid var(--line); border-radius: 26px; background: #ebe6da; }
+    .phrasebook.collapsed { display: none; }
     .phrasebook-head { display: flex; justify-content: space-between; gap: 18px; align-items: center; }
     .phrasebook h2 { margin: 0; font-family: Georgia, "Noto Serif TC", serif; font-size: 1.8rem; font-weight: 500; }
     .phrasebook p { margin: 5px 0 0; color: var(--muted); }
@@ -174,6 +186,7 @@
       .lesson-header { display: block; }
       .complete-button { margin-top: 15px; }
       .time-plan { grid-template-columns: repeat(2, 1fr); }
+      .material-grid { grid-template-columns: 1fr; }
       .phrase { grid-template-columns: 1fr auto; }
       .answer-grid, .quick-list { grid-template-columns: 1fr; }
       .phrasebook-head { display: block; }
@@ -186,7 +199,7 @@
       .topbar, .hero, .sidebar, .mobile-weeks, .week-heading, .day-strip, .lesson, .complete-button, .practice, .speak-button, .footer { display: none !important; }
       .shell { width: 100%; padding: 0; }
       .workspace { display: block; }
-      .phrasebook { margin: 0; border: 0; box-shadow: none; padding: 0; background: #fff; }
+      .phrasebook { display: block !important; margin: 0; border: 0; box-shadow: none; padding: 0; background: #fff; }
       .quick-list { grid-template-columns: repeat(2, 1fr); }
       .quick-item { break-inside: avoid; padding: 4px 7px; border: 1px solid #ddd; background: #fff; font-size: 9pt; }
       .phrase-search, .phrasebook p { display: none; }
@@ -199,9 +212,18 @@
       <div class="brand"><span class="brand-mark" aria-hidden="true">日</span><span>旅する日本語</span></div>
       <div class="top-actions">
         <label class="toggle"><input id="romajiToggle" type="checkbox"> 顯示羅馬字</label>
+        <button class="quiet-button" id="phrasebookToggle" type="button" aria-expanded="false">救命句</button>
         <button class="quiet-button" id="printButton" type="button">列印旅遊小抄</button>
       </div>
     </header>
+
+    <section class="phrasebook collapsed" id="phrasebook" aria-labelledby="phrasebookTitle">
+      <div class="phrasebook-head">
+        <div><p class="eyebrow">Quick phrasebook</p><h2 id="phrasebookTitle">隨身救命句</h2><p>搜尋中文或日文，出發前可列印成一頁。</p></div>
+        <input class="phrase-search" id="phraseSearch" type="search" placeholder="搜尋：廁所、車站、多少錢…" aria-label="搜尋旅遊句">
+      </div>
+      <div class="quick-list" id="quickList"></div>
+    </section>
 
     <section class="hero" aria-labelledby="pageTitle">
       <div class="hero-copy">
@@ -239,13 +261,6 @@
         <div class="day-strip" id="dayStrip" role="tablist" aria-label="每日課程"></div>
         <article class="lesson" id="lesson" aria-live="polite"></article>
 
-        <section class="phrasebook" aria-labelledby="phrasebookTitle">
-          <div class="phrasebook-head">
-            <div><p class="eyebrow">Quick phrasebook</p><h2 id="phrasebookTitle">隨身救命句</h2><p>搜尋中文或日文，出發前可列印成一頁。</p></div>
-            <input class="phrase-search" id="phraseSearch" type="search" placeholder="搜尋：廁所、車站、多少錢…" aria-label="搜尋旅遊句">
-          </div>
-          <div class="quick-list" id="quickList"></div>
-        </section>
       </div>
     </section>
 
@@ -685,6 +700,51 @@
       }
     ];
 
+    const lessonMaterials = {
+      '1-1': { vocab: [['こんにちは','こんにちは','你好（白天）'],['おはようございます','おはよう ございます','早安（禮貌）'],['こんばんは','こんばんは','晚安（晚上見面）'],['ありがとう','ありがとう','謝謝（較隨意）']], pattern: '「すみません」先引起注意；「～をお願いします」提出禮貌請求。', practice: '對著鏡子完成：すみません → 請求一杯水 → ありがとうございます。' },
+      '1-2': { vocab: [['1','いち','一'],['2','に','二'],['3','さん','三'],['4','よん／し','四'],['5','ご','五'],['6','ろく','六'],['7','なな／しち','七'],['8','はち','八'],['9','きゅう／く','九'],['10','じゅう','十'],['100','ひゃく','百'],['1,000','せん','千']], pattern: '價格＝數字＋円（えん）。例：三百円（さんびゃくえん）、千円（せんえん）。300／600／800 與 3,000／8,000 會發生音變。', practice: '先順數 1～10，再把 120、300、600、1,000 日圓讀出來，最後問「いくらですか」。' },
+      '1-3': { vocab: [['これ','これ','這個（靠近我）'],['それ','それ','那個（靠近你）'],['あれ','あれ','那邊那個（離雙方遠）'],['どれ','どれ','哪一個？']], pattern: '「これは～です」介紹物品；「これをください」指著物品提出購買請求。', practice: '拿身邊三樣物品，輪流用これ／それ／あれ說出「這是什麼？」。' },
+      '1-4': { vocab: [['今','いま','現在'],['何時','なんじ','幾點'],['半','はん','半（30 分）'],['から／まで','から／まで','從／到']], pattern: '時間疑問句：何時ですか；起訖用「～から～まで」。', practice: '把課程開始時間、午餐時間、回飯店時間各說一次。' },
+      '1-5': { vocab: [['どこ','どこ','哪裡'],['どれ','どれ','哪一個'],['あります','あります','有（物品／設施）'],['できます','できます','可以／能夠']], pattern: '把疑問詞放在要問的位置，句尾加「ですか」；「ありますか」問物品或設施。', practice: '看房間照片，至少問出：廁所、Wi-Fi、出口在哪裡。' },
+      '1-6': { vocab: [['もう一度','もう いちど','再一次'],['ゆっくり','ゆっくり','慢慢地'],['分かりません','わかりません','不明白'],['簡単な','かんたんな','簡單的']], pattern: '「～てください」是請求對方做某事；もう一度／ゆっくり放在請求前面即可。', practice: '播放一句日文後，先說「分かりません」，再請對方「もう一度お願いします」。' },
+      '1-7': { vocab: [['確認','かくにん','確認'],['質問','しつもん','問題／提問'],['答え','こたえ','回答'],['大丈夫','だいじょうぶ','沒問題']], pattern: '今天只練「開場 → 問題 → 確認 → 道謝」四步，不加新文法。', practice: '抽一件商品，完成 30 秒對話；卡住就使用羅馬字或指圖。' },
+      '2-1': { vocab: [['入国審査','にゅうこく しんさ','入境審查'],['目的','もくてき','目的'],['観光','かんこう','觀光'],['滞在','たいざい','停留']], pattern: '回答身分或目的時，用名詞＋です：観光です；天數用「～日間です」。', practice: '拿出旅館地址，練習回答：目的、停留幾天、住哪裡。' },
+      '2-2': { vocab: [['ICカード','アイシーカード','交通 IC 卡'],['切符','きっぷ','車票'],['買う','かう','買'],['チャージ','チャージ','儲值']], pattern: '「どこで～できますか」詢問在哪裡可以做某事；數張票用量詞「枚」。', practice: '模擬售票機前對站務員說：買卡、儲值、買一張票。' },
+      '2-3': { vocab: [['電車','でんしゃ','電車'],['駅','えき','車站'],['番線','ばんせん','月台編號'],['急行','きゅうこう','急行車']], pattern: '目的地＋へ行きたいです；確認車班用「この電車は～に行きますか」。', practice: '選一個站名，練習問目的地與月台，再複誦「～ですね」。' },
+      '2-4': { vocab: [['乗り換え','のりかえ','轉乘'],['次','つぎ','下一個'],['何分','なんぷん','幾分鐘'],['かかります','かかります','需要（時間／金錢）']], pattern: '動詞「乗り換えます」表示轉乘；「何分かかりますか」詢問所需時間。', practice: '用地圖找一條轉乘路線，說出在哪站換車與大約幾分鐘。' },
+      '2-5': { vocab: [['バス','バス','巴士'],['バス停','バスてい','巴士站'],['ここまで','ここまで','到這裡為止'],['止める','とめる','停下／停車']], pattern: '「～までお願いします」告知目的地；「～てください」請對方做動作。', practice: '對著地圖指一點，完成上車、告知目的地、請停車三句。' },
+      '2-6': { vocab: [['まっすぐ','まっすぐ','直走'],['右','みぎ','右'],['左','ひだり','左'],['曲がる','まがる','轉彎']], pattern: '方向詞＋に＋動詞：右に曲がってください；地點不清楚就請對方用地圖說明。', practice: '在紙上畫十字路口，讓自己或旅伴用日文指路。' },
+      '2-7': { vocab: [['空港','くうこう','機場'],['目的地','もくてきち','目的地'],['確認','かくにん','確認'],['到着','とうちゃく','抵達']], pattern: '交通對話核心是「目的地＋確認問題＋謝謝」；不確定時絕不默默上車。', practice: '從機場到飯店完整演三次，每次降低一次對中文提示的依賴。' },
+      '3-1': { vocab: [['予約','よやく','預約'],['名前','なまえ','姓名'],['部屋','へや','房間'],['チェックイン','チェックイン','入住']], pattern: '「～しています」表示目前持續的狀態：予約しています；姓名用「名前は～です」。', practice: '開啟訂房畫面，練習報姓名、出示護照、請櫃檯辦理入住。' },
+      '3-2': { vocab: [['パスワード','パスワード','密碼'],['タオル','タオル','毛巾'],['エアコン','エアコン','冷氣'],['使えません','つかえません','不能使用']], pattern: '「～が使えません」說明設備故障；追加物品用「もう一つ／もう一枚ください」。', practice: '想像冷氣壞掉，練習說明設備、請人來房間查看。' },
+      '3-3': { vocab: [['何名様','なんめいさま','幾位（敬語）'],['二人','ふたり','兩位'],['入る','はいる','進入'],['待つ','まつ','等待']], pattern: '人數用「人」：一人ひとり、二人ふたり；候位時間問「どのくらい」。', practice: '進三間不同餐廳，分別練習兩位、現在入座、等候多久。' },
+      '3-4': { vocab: [['おすすめ','おすすめ','推薦'],['注文','ちゅうもん','點餐'],['これ','これ','這個'],['水','みず','水']], pattern: '「おすすめは何ですか」詢問推薦；指著菜單用「これをお願いします」即可。', practice: '挑一張日文菜單，圈出三項，再用指物方式完成點餐。' },
+      '3-5': { vocab: [['入る','はいる','進入／含有'],['卵','たまご','蛋'],['肉','にく','肉'],['辛い','からい','辣']], pattern: '「何が入っていますか」問成分；「～は食べません」表達不吃某食材。', practice: '寫下自己的過敏或忌口，練習「～アレルギーがあります」。' },
+      '3-6': { vocab: [['お会計','おかいけい','結帳'],['別々','べつべつ','分開'],['現金','げんきん','現金'],['領収書','りょうしゅうしょ','收據']], pattern: '「～で払えますか」詢問付款方式；「別々に」修飾付款動作。', practice: '模擬兩人吃飯：請結帳、分開付款、刷卡、拿收據。' },
+      '3-7': { vocab: [['宿泊','しゅくはく','住宿'],['食事','しょくじ','用餐'],['必要','ひつよう','需要'],['流れ','ながれ','流程']], pattern: '把每段對話縮成「情況＋請求」兩句，先求流暢再補禮貌語。', practice: '用四張情境卡完成入住到付款；每段最多看一次提示。' },
+      '4-1': { vocab: [['値段','ねだん','價格'],['試着','しちゃく','試穿'],['人気','にんき','受歡迎'],['考える','かんがえる','考慮']], pattern: '「～てもいいですか」詢問允許；比較時用「どちらが～ですか」。', practice: '挑兩件衣服，練習問價格、試穿、哪件受歡迎，再禮貌暫不購買。' },
+      '4-2': { vocab: [['大きい','おおきい','大'],['小さい','ちいさい','小'],['色','いろ','顏色'],['在庫','ざいこ','庫存']], pattern: '形容詞放在名詞前：大きいサイズ；「他の～はありますか」詢問其他選項。', practice: '替「尺寸、顏色」各做兩次替換練習，讓句型變成自己的需求。' },
+      '4-3': { vocab: [['免税','めんぜい','免稅'],['カウンター','カウンター','櫃檯'],['現金','げんきん','現金'],['包装','ほうそう','包裝']], pattern: '名詞＋できますか詢問是否能做某事：免税できますか；付款方式用「～で」。', practice: '把護照、商品、付款方式串成一段免稅結帳對話。' },
+      '4-4': { vocab: [['袋','ふくろ','袋子'],['温める','あたためる','加熱'],['箸','はし','筷子'],['要る','いる','需要']], pattern: '「いります」表示需要；否定「いりません」表示不需要。', practice: '聽到店員快速提問時，只回答：袋子、加熱、筷子各要或不要。' },
+      '4-5': { vocab: [['大人','おとな','成人'],['入場','にゅうじょう','入場'],['入口','いりぐち','入口'],['最終','さいしゅう','最後／最終']], pattern: '票券用「枚」；開放時間用「何時から～何時まで」，最晚入場另問一次。', practice: '找一個景點官網，練習購票、人數、入口、最晚入場四句。' },
+      '4-6': { vocab: [['写真','しゃしん','照片'],['撮る','とる','拍攝'],['禁止','きんし','禁止'],['落とし物','おとしもの','遺失物']], pattern: '「～てもいいですか」問可不可以；遺失物用「～をなくしました／落としました」。', practice: '看景點規範圖示，先問能否拍照，再描述一件遺失物。' },
+      '4-7': { vocab: [['買い物','かいもの','購物'],['観光地','かんこうち','觀光景點'],['予算','よさん','預算'],['選ぶ','えらぶ','選擇']], pattern: '今天整合「比較、詢問、允許、數量」四類句型，不追求新單字量。', practice: '設定預算與兩個景點，完成購物到買票的五分鐘角色扮演。' },
+      '5-1': { vocab: [['言う','いう','說'],['もう少し','もう すこし','再一點'],['書く','かく','寫'],['ですね','です ね','對吧／確認語氣']], pattern: '請對方做事用「～てください」；複誦資訊後加「ですね」確認。', practice: '故意只聽懂半句，練習重複關鍵詞、請對方寫下來、再確認。' },
+      '5-2': { vocab: [['気分','きぶん','感覺／身體狀況'],['頭','あたま','頭'],['痛い','いたい','痛'],['熱','ねつ','發燒']], pattern: '身體部位＋が＋痛いです；起始時間用「昨日から～があります」。', practice: '用圖示指三個身體部位，說出症狀並詢問附近醫院。' },
+      '5-3': { vocab: [['風邪薬','かぜぐすり','感冒藥'],['一日','いちにち','一天'],['回','かい','次數'],['眠い','ねむい','想睡']], pattern: '次數用「一日何回」；用藥時間可用「食前／食後に」。', practice: '拿一個藥盒，練習確認一天幾次、飯前飯後、是否會嗜睡。' },
+      '5-4': { vocab: [['なくす','なくす','弄丟'],['落とす','おとす','掉落'],['黒い','くろい','黑色'],['交番','こうばん','派出所']], pattern: '「～かもしれません」表示可能性；描述遺失物先說物品，再說地點和時間。', practice: '用三個線索描述錢包：顏色、最後地點、可能掉落處。' },
+      '5-5': { vocab: [['遅れる','おくれる','延誤'],['運転','うんてん','行駛'],['見合わせる','みあわせる','暫停／停駛'],['行き方','いきかた','走法']], pattern: '「～ています」描述目前狀態；替代方案問「他の～はありますか」。', practice: '看到「停駛」公告，練習向站務員詢問另一條路與票券是否可用。' },
+      '5-6': { vocab: [['安全','あんぜん','安全'],['避難所','ひなんじょ','避難所'],['救急車','きゅうきゅうしゃ','救護車'],['呼ぶ','よぶ','呼叫']], pattern: '緊急請求用「～てください」；先說地點，再說需要的援助。', practice: '把飯店地址寫在紙上，練習「助けてください」與「救急車を呼んでください」。' },
+      '5-7': { vocab: [['問題','もんだい','問題'],['場所','ばしょ','地點'],['時間','じかん','時間'],['助ける','たすける','幫助']], pattern: '求助三段式：問題 → 地點／時間 → 請求；句子短反而更容易被理解。', practice: '十秒抽題：遺失護照、發燒、停駛，各說一遍三段式求助。' },
+      '6-1': { vocab: [['到着','とうちゃく','抵達'],['入国','にゅうこく','入境'],['荷物','にもつ','行李'],['購入','こうにゅう','購買']], pattern: '把前面學過的「名詞＋です」和「～はどこですか」串成流程。', practice: '不看中文完成入境官、行李處、交通櫃檯三段對話。' },
+      '6-2': { vocab: [['路線','ろせん','路線'],['乗る','のる','搭乘'],['降りる','おりる','下車'],['確認する','かくにんする','確認']], pattern: '每次轉乘都做一次確認：目的地、月台、轉乘站；不確定就再問一次。', practice: '用手機地圖選一條路線，口說說出每一次上車、下車與轉乘。' },
+      '6-3': { vocab: [['宿泊','しゅくはく','住宿'],['予約','よやく','預約'],['注文','ちゅうもん','點餐'],['支払い','しはらい','付款']], pattern: '用「情況＋請求」把兩句接起來，句中停頓比速度重要。', practice: '從櫃檯到餐廳結帳，連續說六句且不看中文。' },
+      '6-4': { vocab: [['商品','しょうひん','商品'],['サイズ','サイズ','尺寸'],['免税','めんぜい','免稅'],['入場券','にゅうじょうけん','入場券']], pattern: '先問允許或選項，再提出明確數量；每次只處理一個需求。', practice: '以四個提示詞完成購物與景點購票，卡住時改用指物。' },
+      '6-5': { vocab: [['事故','じこ','事故／意外'],['紛失','ふんしつ','遺失'],['症状','しょうじょう','症狀'],['代替','だいたい','替代方案']], pattern: '緊急時用已會的短句，不臨時追求複雜文法；關鍵詞＋畫面就是完整溝通。', practice: '每題十秒說出問題、線索、請求，並把三張求助卡放進錢包。' },
+      '6-6': { vocab: [['一日','いちにち','一天'],['練習','れんしゅう','練習'],['役割','やくわり','角色'],['成功','せいこう','成功']], pattern: '八個節點中，每個節點只要完成一個清楚任務，就算過關。', practice: '設定 60 分鐘全日語模擬；每站錄音，結束後只挑三個最需要重練的句子。' },
+      '6-7': { vocab: [['出発','しゅっぱつ','出發'],['帰国','きこく','回國'],['空港','くうこう','機場'],['準備','じゅんび','準備']], pattern: '回程也沿用「地點＋までお願いします」；道別可用「また来ます」。', practice: '做最後 12 項自我檢查：每項能說出關鍵句，就把救命句列印帶走。' }
+    };
+
     const quickPhrases = [
       ['不好意思／麻煩你', 'すみません', 'すみません'],
       ['非常謝謝你', 'ありがとうございます', 'ありがとうございます'],
@@ -767,6 +827,7 @@
 
     function renderLesson() {
       const item = lessons.find(lesson => lesson.week === state.week && lesson.day === state.day) || lessons[0];
+      const material = lessonMaterials[lessonKey(item)];
       const done = state.done.includes(lessonKey(item));
       const date = getLessonDate(item.week, item.day);
       $('#lesson').innerHTML = `
@@ -781,6 +842,11 @@
           <div class="time-block"><strong>5 分鐘</strong><span>完成情境題</span></div>
         </div>
         <div class="tip"><strong>今天只記一件事：</strong> ${item.focus}</div>
+        <h4 class="section-title">今日材料：先學會，再開口</h4>
+        <div class="material-grid">
+          <div class="material-card"><h5>單字與讀音</h5><div class="vocab-list">${material.vocab.map(word => `<div class="vocab-row"><span class="vocab-jp">${word[0]}</span><span><span class="vocab-reading">${word[1]}</span><br><span class="vocab-meaning">${word[2]}</span></span><button class="speak-button" data-speak="${word[1]}" aria-label="播放 ${word[0]}"></button></div>`).join('')}</div></div>
+          <div class="material-card"><h5>句型拆解</h5><p class="rule">${material.pattern}</p><h5 style="margin-top:18px">自學練習</h5><p class="guided">${material.practice}</p></div>
+        </div>
         <h4 class="section-title">今天必會的 4 句</h4>
         <div class="phrase-list">${item.phrases.map(phrase => `
           <div class="phrase"><div><div class="jp">${phrase[0]} <span class="reading">${phrase[1]}</span></div><div class="romaji">${phrase[2]}</div><div class="meaning">${phrase[3]}</div></div><button class="speak-button" data-speak="${phrase[0]}" aria-label="播放 ${phrase[0]}"></button></div>
@@ -859,6 +925,12 @@
     $('#romajiToggle').addEventListener('change', (event) => {
       document.body.classList.toggle('show-romaji', event.target.checked);
       localStorage.setItem('travel-jp-romaji', event.target.checked ? '1' : '0');
+    });
+    $('#phrasebookToggle').addEventListener('click', () => {
+      const phrasebook = $('#phrasebook');
+      const opening = phrasebook.classList.toggle('collapsed') === false;
+      $('#phrasebookToggle').setAttribute('aria-expanded', String(opening));
+      if (opening) phrasebook.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     $('#printButton').addEventListener('click', () => window.print());
     $('#phraseSearch').addEventListener('input', event => renderQuickPhrases(event.target.value));
