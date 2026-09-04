@@ -1,0 +1,21 @@
+{
+  "name": "42日・旅する日本語",
+  "short_name": "旅する日本語",
+  "description": "每天 30 分鐘、六週完成的日本自由行日語課程。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ed",
+  "theme_color": "#18302d",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

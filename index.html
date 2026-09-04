@@ -4,6 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="每天 30 分鐘、六週完成的日本自由行日語課程。">
+  <meta name="theme-color" content="#18302d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon.svg">
   <title>42日・旅する日本語｜六週自由行課程</title>
   <style>
     :root {
@@ -42,6 +48,9 @@
     .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; }
     .brand-mark { display: grid; place-items: center; width: 42px; aspect-ratio: 1; border-radius: 50%; color: #fff; background: var(--red); box-shadow: inset 0 0 0 7px rgba(255,255,255,.12); }
     .top-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .offline-status { padding: 7px 11px; border-radius: 999px; color: var(--green); background: var(--green-soft); font-size: .76rem; font-weight: 800; }
+    .offline-status.pending { color: var(--muted); background: #eeece5; }
+    .offline-status.warning { color: #805d22; background: #f7f0df; }
     .quiet-button, .primary-button, .week-button, .speak-button, .answer-button {
       border: 0;
       border-radius: 999px;
@@ -211,6 +220,7 @@
     <header class="topbar">
       <div class="brand"><span class="brand-mark" aria-hidden="true">日</span><span>旅する日本語</span></div>
       <div class="top-actions">
+        <span class="offline-status pending" id="offlineStatus" role="status" aria-live="polite">檢查離線功能…</span>
         <label class="toggle"><input id="romajiToggle" type="checkbox"> 顯示羅馬字</label>
         <button class="quiet-button" id="phrasebookToggle" type="button" aria-expanded="false">救命句</button>
         <button class="quiet-button" id="printButton" type="button">列印旅遊小抄</button>
@@ -935,6 +945,30 @@
     $('#printButton').addEventListener('click', () => window.print());
     $('#phraseSearch').addEventListener('input', event => renderQuickPhrases(event.target.value));
     $('#startDate').addEventListener('change', event => { localStorage.setItem('travel-jp-start', event.target.value); renderLesson(); });
+
+    const offlineStatus = $('#offlineStatus');
+    function setOfflineStatus(message, tone = '') {
+      offlineStatus.textContent = message;
+      offlineStatus.className = `offline-status ${tone}`.trim();
+    }
+    function updateConnectionStatus() {
+      if (!navigator.onLine) setOfflineStatus('目前離線學習', '');
+      else if (!('serviceWorker' in navigator)) setOfflineStatus('需 HTTPS 才能離線', 'warning');
+    }
+    updateConnectionStatus();
+    window.addEventListener('online', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          await navigator.serviceWorker.register('./sw.js', { scope: './' });
+          await navigator.serviceWorker.ready;
+          setOfflineStatus(navigator.onLine ? '離線快取已啟用' : '目前離線學習');
+        } catch {
+          setOfflineStatus('需 HTTPS 才能離線', 'warning');
+        }
+      });
+    }
 
     const savedDate = localStorage.getItem('travel-jp-start');
     const now = new Date();
